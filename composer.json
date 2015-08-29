@@ -1,5 +1,5 @@
 {
-    "name": "lucasandrade/laravel-jwt",
+    "name": "lucasandrade/laravel-jwtauth",
     "description": "Biblioteca de autenticação usando JWT",
     "keywords": ["framework", "laravel", "JWT"],
     "license": "MIT",
