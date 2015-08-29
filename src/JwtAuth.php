@@ -15,6 +15,8 @@ use Firebase\JWT\JWT;
 use Lucandrade\JwtAuth\Excetions\MissingTokenException;
 use Lucandrade\JwtAuth\Excetions\InvalidTokenException;
 use Lucandrade\JwtAuth\Excetions\ExpiredTokenException;
+use Lucandrade\JwtAuth\Excetions\NotFoundTokenException;
+use Lucandrade\JwtAuth\Storage\SessionStorage;
 use Illuminate\Http\Request;
 use Config;
 
@@ -25,14 +27,16 @@ class JwtAuth
 {
 
     protected $jwt;
+    protected $sessionStorage;
 
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
      * @param  Firebase\JWT\JWT $jwt
      */
-    public function __construct(JWT $jwt)
+    public function __construct(JWT $jwt, SessionStorage $sessionStorage)
     {
         $this->jwt = $jwt;
+        $this->sessionStorage = $sessionStorage;
     }
 
     /**
@@ -75,7 +79,6 @@ class JwtAuth
             return true;
         } else {
             throw new ExpiredTokenException;
-            
         }
     }
 
@@ -112,11 +115,16 @@ class JwtAuth
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
      * @param  String $token
-     * @return boolean
+     * @return array
      */
     public function getTokenFromStorage($token)
     {
-
+        $storageToken = $this->session->getToken($token);
+        if ($storageToken !== false) {
+            return $storageToken;
+        } else {
+            throw new NotFoundTokenException;
+        }
     }
 
     /**
@@ -126,6 +134,17 @@ class JwtAuth
      */
     public function createToken(array $payload)
     {
-
+        try {
+            $userToken = $this->session->createToken(str_random(32));
+            $tokenData = [
+                "exp" => $userToken["expired_at"],
+                "iat" => $userToken["created_at"],
+                "token" => $userToken["token"],
+                "data" => $payload
+            ];
+            return JWT::encode($tokenData, $this->config("key"));
+        } catch (Exception $e) {
+            return false;
+        }
     }
 }

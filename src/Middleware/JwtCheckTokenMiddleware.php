@@ -57,6 +57,8 @@ class JwtCheckTokenMiddleware
             $response = "Invalid Token";
         } catch (\ExpiredTokenException $e) {
             $response = "This token has expired";
+        } catch (\NotFoundTokenException $e) {
+            $response = "Token not found";
         } catch (\Exception $e) {
             $response = "Unexpected error";
         }

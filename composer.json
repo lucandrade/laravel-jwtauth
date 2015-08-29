@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-0":{
-            "laravel\\jwtauth\\": "src/"
+            "Lucandrade\\JwtAuth\\": "src/"
         }
     },
     "authors": [

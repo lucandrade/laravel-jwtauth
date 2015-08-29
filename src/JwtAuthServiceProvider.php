@@ -11,6 +11,9 @@
 
 namespace Lucandrade\JwtAuth;
 
+use Lucandrade\JwtAuth\JwtAuth;
+use Lucandrade\JwtAuth\Storage\SessionStorage;
+use Firebase\JWT\JWT;
 use Illuminate\Support\ServiceProvider;
 
 class JwtAuthServiceProvider extends ServiceProvider
@@ -22,7 +25,29 @@ class JwtAuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->setupConfig();
+        $this->setupMigrations();
+    }
 
+    /**
+     * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
+     * @return void
+     */
+    protected function setupConfig()
+    {
+        $source = realpath(__DIR__.'/../config/oauth2.php');
+        $this->publishes([$source => config_path('oauth2.php')]);
+        $this->mergeConfigFrom($source, 'oauth2');
+    }
+
+    /**
+     * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
+     * @return void
+     */
+    protected function setupMigrations()
+    {
+        $source = realpath(__DIR__.'/../database/migrations/');
+        $this->publishes([$source => database_path('migrations')], 'migrations');
     }
 
     /**
@@ -31,6 +56,18 @@ class JwtAuthServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerAuthorizer();
+    }
 
+    /**
+     * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
+     * @return void
+     */
+    public function registerAuthorizer()
+    {
+        $this->app->bindShared("jwtauth", function ($app) {
+            $sessionStorage = $app->make(SessionStorage::class);
+            return new JwtAuth(new JWT(), $sessionStorage);
+        });
     }
 }

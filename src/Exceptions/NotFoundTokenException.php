@@ -9,11 +9,16 @@
  * file that was distributed with this source code.
  */
 
-return [
-    "key" => "ILZJuVyXGxgA82Lh9eFMyFyW5AIIML5yI2oWfCvni3o8JTTgv7ZjwfNGX8Tg",
-    "alg" => "HS256",
-    "check_only_header" => true,
-    "get_param_key" => "token",
-    "connection" => "default",
-    "tbl_session_name" => "session"
-];
+namespace Lucandrade\JwtAuth\Exceptions;
+
+use Exception;
+
+/**
+ * This is the check auth code request middleware class.
+ *
+ * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
+ */
+class NotFoundTokenException extends Exception
+{
+
+}
