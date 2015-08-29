@@ -89,7 +89,7 @@ class JwtAuth
      */
     public function isExpiredToken($storageToken)
     {
-        return $storageToken["expired_at"] > strtotime("now")
+        return $storageToken["expired_at"] > strtotime("now");
     }
 
     /**
