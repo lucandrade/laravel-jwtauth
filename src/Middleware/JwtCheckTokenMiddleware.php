@@ -13,6 +13,10 @@ namespace Lucandrade\JwtAuth\Middleware;
 
 use Closure;
 use Lucandrade\JwtAuth\JwtAuth;
+use Lucandrade\JwtAuth\Exceptions\MissingTokenException;
+use Lucandrade\JwtAuth\Exceptions\InvalidTokenException;
+use Lucandrade\JwtAuth\Exceptions\ExpiredTokenException;
+use Lucandrade\JwtAuth\Exceptions\NotFoundTokenException;
 
 /**
  * This is the check auth code request middleware class.
@@ -60,7 +64,8 @@ class JwtCheckTokenMiddleware
         } catch (\NotFoundTokenException $e) {
             $response = "Token not found";
         } catch (\Exception $e) {
-            $response = "Unexpected error";
+            $message = $e->getMessage();
+            $response = empty($message) ? "Unexpected error" : $message;
         }
         return $response;
     }

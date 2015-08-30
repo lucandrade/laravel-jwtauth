@@ -12,10 +12,10 @@
 namespace Lucandrade\JwtAuth;
 
 use Firebase\JWT\JWT;
-use Lucandrade\JwtAuth\Excetions\MissingTokenException;
-use Lucandrade\JwtAuth\Excetions\InvalidTokenException;
-use Lucandrade\JwtAuth\Excetions\ExpiredTokenException;
-use Lucandrade\JwtAuth\Excetions\NotFoundTokenException;
+use Lucandrade\JwtAuth\Exceptions\MissingTokenException;
+use Lucandrade\JwtAuth\Exceptions\InvalidTokenException;
+use Lucandrade\JwtAuth\Exceptions\ExpiredTokenException;
+use Lucandrade\JwtAuth\Exceptions\NotFoundTokenException;
 use Lucandrade\JwtAuth\Storage\SessionStorage;
 use Illuminate\Http\Request;
 use Config;
@@ -33,9 +33,17 @@ class JwtAuth
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
      * @param  Firebase\JWT\JWT $jwt
      */
-    public function __construct(JWT $jwt, SessionStorage $sessionStorage)
+    public function __construct(JWT $jwt)
     {
         $this->jwt = $jwt;
+    }
+
+    /**
+     * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
+     * @return array void
+     */
+    public function setSessionStorage(SessionStorage $sessionStorage)
+    {
         $this->sessionStorage = $sessionStorage;
     }
 
@@ -45,7 +53,12 @@ class JwtAuth
      */
     public function getConfig()
     {
-        return Config::get('jwtauth');
+        $config = Config::get('jwtauth');
+        if (!empty($config)) {
+            return Config::get('jwtauth');
+        } else {
+            throw new Exception("Configuration file not found");
+        }
     }
 
     /**

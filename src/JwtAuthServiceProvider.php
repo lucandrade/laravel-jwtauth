@@ -66,8 +66,9 @@ class JwtAuthServiceProvider extends ServiceProvider
     public function registerAuthorizer()
     {
         $this->app->bindShared("jwtauth", function ($app) {
-            $sessionStorage = $app->make(SessionStorage::class);
-            return new JwtAuth(new JWT(), $sessionStorage);
+            $jwt = JwtAuth(new JWT());
+            $sessionStorage = new SessionStorage($app["db"]);
+            $jwt->setSessionStorage($sessionStorage);
         });
     }
 }
