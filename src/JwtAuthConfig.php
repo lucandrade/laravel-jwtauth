@@ -11,8 +11,6 @@
 
 namespace Lucandrade\JwtAuth;
 
-use Config;
-
 /**
  * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
  */
@@ -21,7 +19,7 @@ class JwtAuthConfig
 
     public static function get()
     {
-        $config = Config::get('jwtauth');
+        $config = config("jwtauth");
         if (!empty($config)) {
             return $config;
         } else {
