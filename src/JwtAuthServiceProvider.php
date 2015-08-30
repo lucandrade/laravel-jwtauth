@@ -35,9 +35,9 @@ class JwtAuthServiceProvider extends ServiceProvider
      */
     protected function setupConfig()
     {
-        $source = realpath(__DIR__.'/../config/oauth2.php');
-        $this->publishes([$source => config_path('oauth2.php')]);
-        $this->mergeConfigFrom($source, 'oauth2');
+        $source = realpath(__DIR__.'/../config/jwtauth.php');
+        $this->publishes([$source => config_path('jwtauth.php')], 'config');
+        $this->mergeConfigFrom($source, 'jwtauth');
     }
 
     /**
@@ -66,9 +66,8 @@ class JwtAuthServiceProvider extends ServiceProvider
     public function registerAuthorizer()
     {
         $this->app->bindShared("jwtauth", function ($app) {
-            $jwt = JwtAuth(new JWT());
-            $sessionStorage = new SessionStorage($app["db"]);
-            $jwt->setSessionStorage($sessionStorage);
+            $jwt = new JwtAuth(new JWT(), new SessionStorage($app["db"]));
+            return $jwt;
         });
     }
 }

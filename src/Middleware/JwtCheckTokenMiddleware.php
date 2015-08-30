@@ -55,13 +55,13 @@ class JwtCheckTokenMiddleware
         try {
             $this->authorizer->validateToken($request);
             $response = $next($request);
-        } catch (\MissingTokenException $e) {
+        } catch (MissingTokenException $e) {
             $response = "Token is missing";
-        } catch (\InvalidTokenException $e) {
+        } catch (InvalidTokenException $e) {
             $response = "Invalid Token";
-        } catch (\ExpiredTokenException $e) {
+        } catch (ExpiredTokenException $e) {
             $response = "This token has expired";
-        } catch (\NotFoundTokenException $e) {
+        } catch (NotFoundTokenException $e) {
             $response = "Token not found";
         } catch (\Exception $e) {
             $message = $e->getMessage();

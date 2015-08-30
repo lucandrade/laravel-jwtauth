@@ -12,6 +12,7 @@
 namespace Lucandrade\JwtAuth;
 
 use Firebase\JWT\JWT;
+use Lucandrade\JwtAuth\JwtAuthConfig;
 use Lucandrade\JwtAuth\Exceptions\MissingTokenException;
 use Lucandrade\JwtAuth\Exceptions\InvalidTokenException;
 use Lucandrade\JwtAuth\Exceptions\ExpiredTokenException;
@@ -33,9 +34,10 @@ class JwtAuth
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
      * @param  Firebase\JWT\JWT $jwt
      */
-    public function __construct(JWT $jwt)
+    public function __construct(JWT $jwt, SessionStorage $sessionStorage)
     {
         $this->jwt = $jwt;
+        $this->sessionStorage = $sessionStorage;
     }
 
     /**
@@ -53,12 +55,7 @@ class JwtAuth
      */
     public function getConfig()
     {
-        $config = Config::get('jwtauth');
-        if (!empty($config)) {
-            return Config::get('jwtauth');
-        } else {
-            throw new Exception("Configuration file not found");
-        }
+        return JwtAuthConfig::get();
     }
 
     /**
@@ -88,7 +85,8 @@ class JwtAuth
     {
         $payloadToken = $this->decodeToken($token);
         $storageToken = $this->getTokenFromStorage($payloadToken);
-        if (!$this->isExpiredToken($storageToken)) {
+        $expired = $this->isExpiredToken($storageToken);
+        if (!$expired) {
             return true;
         } else {
             throw new ExpiredTokenException;
@@ -102,7 +100,7 @@ class JwtAuth
      */
     public function isExpiredToken($storageToken)
     {
-        return $storageToken["expired_at"] > strtotime("now");
+        return $storageToken["expired_at"] < strtotime("now");
     }
 
     /**
@@ -113,7 +111,7 @@ class JwtAuth
     public function decodeToken($token)
     {
         $config = $this->getConfig();
-        $decoded = JWT::decode($token, $config["key"], $config["arg"]);
+        $decoded = (array) JWT::decode($token, $config["key"], array($config["alg"]));
         if ($decoded) {
             if (array_key_exists("token", $decoded)) {
                 return $decoded["token"];
@@ -132,7 +130,7 @@ class JwtAuth
      */
     public function getTokenFromStorage($token)
     {
-        $storageToken = $this->session->getToken($token);
+        $storageToken = $this->sessionStorage->getToken($token);
         if ($storageToken !== false) {
             return $storageToken;
         } else {
@@ -148,15 +146,16 @@ class JwtAuth
     public function createToken(array $payload)
     {
         try {
-            $userToken = $this->session->createToken(str_random(32));
+            $config = $this->getConfig();
+            $userToken = $this->sessionStorage->createToken(str_random(32));
             $tokenData = [
                 "exp" => $userToken["expired_at"],
                 "iat" => $userToken["created_at"],
                 "token" => $userToken["token"],
                 "data" => $payload
             ];
-            return JWT::encode($tokenData, $this->config("key"));
-        } catch (Exception $e) {
+            return JWT::encode($tokenData, $config["key"]);
+        } catch (\Exception $e) {
             return false;
         }
     }

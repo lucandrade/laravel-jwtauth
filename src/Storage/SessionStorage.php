@@ -41,7 +41,7 @@ class SessionStorage extends AbstractStorage
             ->where("token", $token)
             ->where("active", true);
         if ($storageToken->count() > 0) {
-            return $storageToken->first();
+            return (array) $storageToken->first();
         } else {
             return false;
         }
@@ -64,7 +64,7 @@ class SessionStorage extends AbstractStorage
             ->getConnection()
             ->table($this->getTableName())
             ->insertGetId($data);
-        return $this
+        return (array) $this
             ->getConnection()
             ->table($this->getTableName())
             ->where('id', $id)

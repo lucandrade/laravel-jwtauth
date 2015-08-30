@@ -11,7 +11,8 @@
 
 namespace Lucandrade\JwtAuth\Storage;
 
-use Illuminate\Database\ConnectionResolverInterface as Resolver;
+use Lucandrade\JwtAuth\JwtAuthConfig;
+use Illuminate\Database\DatabaseManager;
 use Config;
 
 /**
@@ -20,46 +21,46 @@ use Config;
 class AbstractStorage
 {
 
-    protected $resolver;
+    protected $databaseManager;
     protected $connectionName;
     protected $conifg;
 
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
-     * @param  Firebase\JWT\JWT $jwt
+     * @param  Illuminate\Database\DatabaseManager $databaseManager
      */
-    public function __construct(Resolver $resolver)
+    public function __construct(DatabaseManager $databaseManager)
     {
-        $this->config = Config::get('jwtauth');
+        $this->config = JwtAuthConfig::get();
         $this
-            ->setResolver($resolver)
+            ->setDatabaseManager($databaseManager)
             ->setConnectionName($this->config['connection']);
     }
 
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
-     * @param  Resolver
-     * @return  $this
+     * @param  Illuminate\Database\DatabaseManager
+     * @return  AbstractStorage
      */
-    public function setResolver(Resolver $resolver)
+    public function setDatabaseManager(DatabaseManager $databaseManager)
     {
-        $this->resolver = $resolver;
+        $this->databaseManager = $databaseManager;
         return $this;
     }
 
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
-     * @return Resolver $this->resolver
+     * @return Illuminate\Database\DatabaseManager
      */
-    public function getResolver()
+    public function getDatabaseManager()
     {
-        return $this->resolver;
+        return $this->databaseManager;
     }
 
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
      * @param  String $connectionName
-     * @return  $this
+     * @return  AbstractStorage
      */
     public function setConnectionName($connectionName)
     {
@@ -69,10 +70,10 @@ class AbstractStorage
 
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
-     * @return \Illuminate\Database\ConnectionInterface
+     * @return Illuminate\Database\DatabaseManager
      */
     protected function getConnection()
     {
-        return $this->resolver->connection($this->connectionName);
+        return $this->getDatabaseManager()->connection($this->connectionName);
     }
 }
