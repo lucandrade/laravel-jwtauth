@@ -58,22 +58,27 @@ class JwtAuth
         return JwtAuthConfig::get();
     }
 
+    public function getTokenFromRequest(\Illuminate\Http\Request $request)
+    {
+        $config = $this->getConfig();
+        $checkOnlyHeader = $config['check_only_header'];
+        if ($request->header('Authorization')) {
+            return $request->header('Authorization');
+        } else if (!$checkOnlyHeader && $request->input($config['get_param_key'])) {
+            return $request->input($config['get_param_key']);
+        } else {
+            throw new MissingTokenException;
+        }
+    }
+
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
      * @param  \Illuminate\Http\Request $request
      * @return boolean
      */
-    public function validateToken($request)
+    public function validateToken(\Illuminate\Http\Request $request)
     {
-        $config = $this->getConfig();
-        $checkOnlyHeader = $config['check_only_header'];
-        if ($request->header('Authorization')) {
-            return $this->checkToken($request->header('Authorization'));
-        } else if (!$checkOnlyHeader && $request->input($config['get_param_key'])) {
-            return $this->checkToken($request->input($config['get_param_key']));
-        } else {
-            throw new MissingTokenException;
-        }
+        return $this->checkToken($this->getTokenFromRequest($request));
     }
 
     /**
