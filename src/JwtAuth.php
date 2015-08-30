@@ -29,6 +29,7 @@ class JwtAuth
 
     protected $jwt;
     protected $sessionStorage;
+    private $payload;
 
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
@@ -38,6 +39,26 @@ class JwtAuth
     {
         $this->jwt = $jwt;
         $this->sessionStorage = $sessionStorage;
+    }
+
+    /**
+     * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
+     * @param  $payload
+     * @return  JwtAuth [this]
+     */
+    private function setPayload($payload)
+    {
+        $this->payload = $payload;
+        return $this;
+    }
+
+    /**
+     * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
+     * @return array
+     */
+    public function getPayload()
+    {
+        return $this->payload;
     }
 
     /**
@@ -118,7 +139,8 @@ class JwtAuth
         $config = $this->getConfig();
         $decoded = (array) JWT::decode($token, $config["key"], array($config["alg"]));
         if ($decoded) {
-            if (array_key_exists("token", $decoded)) {
+            if (array_key_exists("token", $decoded) && array_key_exists("data", $decoded)) {
+                $this->setPayload($decoded["data"]);
                 return $decoded["token"];
             } else {
                 throw new InvalidTokenException;
