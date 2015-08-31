@@ -136,16 +136,16 @@ class JwtAuth
      */
     public function decodeToken($token)
     {
-        $config = $this->getConfig();
-        $decoded = (array) JWT::decode($token, $config["key"], array($config["alg"]));
-        if ($decoded) {
+        try {
+            $config = $this->getConfig();
+            $decoded = (array) JWT::decode($token, $config["key"], array($config["alg"]));
             if (array_key_exists("token", $decoded) && array_key_exists("data", $decoded)) {
                 $this->setPayload($decoded["data"]);
                 return $decoded["token"];
             } else {
                 throw new InvalidTokenException;
             }
-        } else {
+        } catch(\Exception $e) {
             throw new InvalidTokenException;
         }
     }
