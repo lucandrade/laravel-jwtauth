@@ -1,5 +1,7 @@
 # Laravel Jwt Auth
 
+[![Build Status](https://travis-ci.org/lucandrade/laravel-jwtauth.svg?branch=master)](https://travis-ci.org/lucandrade/laravel-jwtauth)
+
 ## Compatibility
 
  Laravel  | PHP
