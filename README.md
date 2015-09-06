@@ -45,7 +45,7 @@ php artisan vendor:publish
 Execute this command from your project path:
 
 ```
-cp ./vendor/lucasandrade/laravel-jwtauth/src/config/jwtauth.php ./config
+mkdir config & cp ./vendor/lucasandrade/laravel-jwtauth/config/jwtauth.php ./config & cp ./vendor/lucasandrade/laravel-jwtauth/database/migrations/* ./database/migrations/
 ```
 
 Uncomment the following line of your `bootstrap/app.php` file:
@@ -58,6 +58,12 @@ Add this line in the end of file:
 
 ```
 $app->register(Lucandrade\JwtAuth\Lumen\JwtAuthServiceProvider::class);
+```
+
+Then run `migrate` command:
+
+```
+php artisan migrate
 ```
 
 ## Usage

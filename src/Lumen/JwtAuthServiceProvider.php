@@ -41,6 +41,9 @@ class JwtAuthServiceProvider extends BaseProvider
      */
     public function registerConfiguration()
     {
+        if (!class_exists("JwtAuth")) {
+            class_alias('Lucandrade\JwtAuth\Facades\JwtAuth', 'JwtAuth');
+        }
         $this->app->configure('jwtauth');
     }
 }
