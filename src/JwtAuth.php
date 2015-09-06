@@ -46,7 +46,7 @@ class JwtAuth
      * @param  $payload
      * @return  JwtAuth [this]
      */
-    private function setPayload($payload)
+    public function setPayload($payload)
     {
         $this->payload = $payload;
         return $this;
@@ -183,6 +183,7 @@ class JwtAuth
             ];
             return JWT::encode($tokenData, $config["key"]);
         } catch (\Exception $e) {
+            var_dump($e->getMessage());
             return false;
         }
     }

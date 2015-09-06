@@ -23,7 +23,7 @@ class AbstractStorage
 
     protected $databaseManager;
     protected $connectionName;
-    protected $conifg;
+    protected $config;
 
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
