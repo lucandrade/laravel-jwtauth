@@ -16,3 +16,17 @@ Add the following line to your `composer.json` file:
 ```
 
 Then run `composer update` to get the package.
+
+## Configuration - Laravel
+
+Add this line of code to the `providers` array located in your `config/app.php` file:
+
+```
+Lucandrade\JwtAuth\JwtAuthServiceProvider::class,
+```
+
+Add this line to the `aliases` array:
+
+```
+'JwtAuth' => \Lucandrade\JwtAuth\Facades\JwtAuth::class,
+```
