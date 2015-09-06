@@ -145,7 +145,7 @@ class JwtAuth
             } else {
                 throw new InvalidTokenException;
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new InvalidTokenException;
         }
     }
@@ -170,11 +170,11 @@ class JwtAuth
      * @param  array $payload
      * @return String
      */
-    public function createToken(array $payload)
+    public function createToken($userId, array $payload)
     {
         try {
             $config = $this->getConfig();
-            $userToken = $this->sessionStorage->createToken(str_random(32));
+            $userToken = $this->sessionStorage->createToken(str_random(32), $payload, $userId);
             $tokenData = [
                 "exp" => $userToken["expired_at"],
                 "iat" => $userToken["created_at"],
@@ -183,7 +183,6 @@ class JwtAuth
             ];
             return JWT::encode($tokenData, $config["key"]);
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
             return false;
         }
     }

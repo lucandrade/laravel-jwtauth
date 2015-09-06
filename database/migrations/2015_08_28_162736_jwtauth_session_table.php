@@ -26,7 +26,9 @@ class JwtauthSessionTable extends Migration
         $config = $this->getConfig();
         Schema::create($config["tbl_session_name"], function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id');
             $table->string('token');
+            $table->text('payload');
             $table->boolean('active')->default(true);
             $table->integer('created_at');
             $table->integer('expired_at');

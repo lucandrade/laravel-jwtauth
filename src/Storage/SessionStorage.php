@@ -50,13 +50,17 @@ class SessionStorage extends AbstractStorage
     /**
      * @author Lucas Andrade <lucas.andrade.oliveira@hotmail.com>
      * @param  String $token
+     * @param  Array $payload
+     * @param  Integer $userId
      * @return array
      */
-    public function createToken($token)
+    public function createToken($token, array $payload, $userId)
     {
         $return = false;
         $data = [
             "token" => $token,
+            "user_id" => $userId,
+            "payload" => json_encode($payload),
             "expired_at" => strtotime("+1 day"),
             "created_at" => strtotime("now")
         ];

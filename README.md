@@ -60,4 +60,8 @@ Add this line in the end of file:
 $app->register(Lucandrade\JwtAuth\Lumen\JwtAuthServiceProvider::class);
 ```
 
+## Usage
+
+Soon
+
 > **Note:** remember to add `use JwtAuth;` to the beginning of the yours class file

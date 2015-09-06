@@ -64,7 +64,8 @@ class ApiResponseTest extends BaseTest
     public function testCreateToken()
     {
         $data = ["user" => ["asas"]];
-        $token = JwtAuth::createToken($data);
+        $userId = 1;
+        $token = JwtAuth::createToken($userId, $data);
         $this->assertFalse(empty($token));
     }
 }
